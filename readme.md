@@ -1,4 +1,4 @@
-# Tool for importing speedTree tree assets using stmap and meshData 
+# Tool for importing speedTree assets using stmap and meshData 
 
 # Installation
 
