@@ -1,5 +1,5 @@
 <img src="/Krooz/icon/Tool.png" width="30%" />
-# Plugin for importing speedTree assets as USD-Ready Assets using stmap and mesh Data 
+# Plugin for importing speedTree assets as USD-Ready Assets using stmap and mesh Data <br/>
 # Installation
 
 <sub>1 . Copy Krooz folder to Houdini<$HOME> scripts Folder make sure you have a **__init__.py** file there.</sub><br />
