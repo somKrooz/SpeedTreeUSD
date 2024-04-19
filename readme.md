@@ -1,4 +1,5 @@
-# Tool for importing speedTree assets using stmap and meshData 
+<img src"Krooz\icon\Tool.png"></img>
+# Plugin for importing speedTree assets as USD-Ready Assets using stmap and mesh Data 
 
 # Installation
 

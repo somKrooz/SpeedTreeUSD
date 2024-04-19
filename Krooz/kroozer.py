@@ -30,7 +30,7 @@ class Cool_kroozer(QtWidgets.QDialog):
     def widgets(self):
         self.stmap = hou.qt.FileLineEdit()
         self.file = hou.qt.FileLineEdit()
-        self.mylbl = QtWidgets.QLabel("Som Krooz")
+        # self.mylbl = QtWidgets.QLabel("Krooz")
 
         self.com_geo = QtWidgets.QLineEdit()
         self.com_geo.setPlaceholderText("geo")
@@ -49,16 +49,15 @@ class Cool_kroozer(QtWidgets.QDialog):
         
         self.mainlyt = QtWidgets.QVBoxLayout(self)   
         self.optionlytb = QtWidgets.QFormLayout(self)
-        self.optionlytb.addRow("stmap",self.stmap)
-        self.optionlytb.addRow("file",self.file)
-        self.optionlytb.addRow("Comp Geo",self.com_geo)
+        self.optionlytb.addRow("File",self.file)
+        self.optionlytb.addRow("Stmap",self.stmap)
+        self.optionlytb.addRow("Comp Geometry",self.com_geo)
         self.optionlytb.addRow("Material Library",self.com_mat)
         self.optionlytb.addRow("Comp Material",self.out_mat)
 
 
         self.mainlyt.addLayout(self.optionlytb)
-
-        self.mainlyt.addWidget(self.mylbl)
+        # self.mainlyt.addWidget(self.mylbl)
         self.mainlyt.addWidget(self.Init)
         self.mainlyt.addWidget(self.Create)
         
@@ -78,17 +77,12 @@ class Cool_kroozer(QtWidgets.QDialog):
     def myThing(self):
 
         file_path = self.stmap.text()
-
         mesh_path = self.file.text()
-
         directory, filename = str(mesh_path).rsplit('/', 1)
-
-
         cool = str(mesh_path).split("/")
         name = str(cool[-1]).split(".")
         mesh_name = str(name[0])
-
-
+        
         with open(file_path, 'r', encoding='utf-8-sig') as file:
             xml_data = file.read()
 
@@ -125,15 +119,13 @@ class Cool_kroozer(QtWidgets.QDialog):
 
             materials_list.append(material_data)
 
-        # Convert the list to JSON
-        json_data = json.dumps(materials_list, indent=2)
 
         # Export JSON data to a file
-        with open(f'{file_path}output.json', 'w') as json_file:
-            json_file.write(json_data)
+        with open(f'{file_path}_cache.json', 'w') as json_file:
+           json.dump(materials_list,json_file, indent=2)
 
 
-        with open(f'{file_path}output.json', 'r') as json_file:
+        with open(f'{file_path}_cache.json', 'r') as json_file:
             materials_list = json.load(json_file)
 
         componentGeo = self.com_geo.text()
@@ -166,33 +158,34 @@ class Cool_kroozer(QtWidgets.QDialog):
                 if str(category).startswith("COLOR"):
                     if map_data["File"] != None:
 
-                        img = mat.createNode("mtlximage","COLOR")
+                        img = mat.createNode("mtlximage",f"{material_name}_COLOR")
                         img.parm("file").set(map_data['Source'])
                         main.setInput(1,img)
 
                 if str(category).startswith("OPACITY"):
                     if map_data["File"] != None:
-                        op = mat.createNode("mtlximage","OPACITY")
+                        op = mat.createNode("mtlximage",f"{material_name}_OPACITY")
                         op.parm("file").set(map_data['Source'])
                         main.setInput(38,op)
 
                 if str(category).startswith("NORMAL"):
                     if map_data["File"] != None:
-                        norm = mat.createNode("mtlximage","NORMAL")
+                        norm = mat.createNode("mtlximage",f"{material_name}_NORMAL")
                         norm.parm("file").set(map_data['Source'])
-                        bump = mat.createNode("mtlxbump","Bump")
+                        bump = mat.createNode("mtlxbump",f"{material_name}_Bump")
                         bump.parm("scale").set(0.05)
                         bump.setInput(0,norm)
                         main.setInput(40,bump)
 
                 if str(category).startswith("GLOSS"):
                     if map_data["File"] != None:
-                        gls = mat.createNode("mtlximage","GLOSS")
+                        gls = mat.createNode("mtlximage",f"{material_name}_GLOSS")
                         gls.parm("file").set(map_data['Source'])
                         main.setInput(2,gls)
                 
                         
             material_count +=1
+        mat.layoutChildren()
 
         componentmaterial = hou.node(componentMat)
         componentmaterial.parm("nummaterials").set(material_count)
@@ -201,7 +194,3 @@ class Cool_kroozer(QtWidgets.QDialog):
             material_name = material["Material Name"]
             componentmaterial.parm(f"primpattern{id+1}").set(f"/ASSET/geo/{mesh_name}/{material_name}")
             componentmaterial.parm(f"matspecpath{id+1}").set(f"/ASSET/mtl/{material_name}")
-
-
-            
-
