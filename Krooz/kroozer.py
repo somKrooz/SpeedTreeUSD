@@ -14,7 +14,6 @@ class Cool_kroozer(QtWidgets.QDialog):
         self.layout()
         self.connection()
 
-
     def configure_dialog(self):
         width = 340
         height = 300
@@ -168,14 +167,15 @@ class Cool_kroozer(QtWidgets.QDialog):
                         op.parm("file").set(map_data['Source'])
                         main.setInput(38,op)
 
-                if str(category).startswith("NORMAL"):
-                    if map_data["File"] != None:
-                        norm = mat.createNode("mtlximage",f"{material_name}_NORMAL")
-                        norm.parm("file").set(map_data['Source'])
-                        bump = mat.createNode("mtlxbump",f"{material_name}_Bump")
-                        bump.parm("scale").set(0.05)
-                        bump.setInput(0,norm)
-                        main.setInput(40,bump)
+        #houdini 19.5 doesnt work ! mtx bump node   
+                # if str(category).startswith("NORMAL"):
+                #     if map_data["File"] != None:
+                #         norm = mat.createNode("mtlximage",f"{material_name}_NORMAL")
+                #         norm.parm("file").set(map_data['Source'])
+                #         bump = mat.createNode("mtlxbump",f"{material_name}_Bump")
+                #         bump.parm("scale").set(0.05)
+                #         bump.setInput(0,norm)
+                #         main.setInput(40,bump)
 
                 if str(category).startswith("GLOSS"):
                     if map_data["File"] != None:
@@ -185,6 +185,7 @@ class Cool_kroozer(QtWidgets.QDialog):
                 
                         
             material_count +=1
+
         mat.layoutChildren()
 
         componentmaterial = hou.node(componentMat)
